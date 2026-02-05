@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client'
 import Layout from '@/Layouts/Layout';
 
 createInertiaApp({
+    title: title => title ? `${title} - LRN STACK` : 'LRN STACK', 
     resolve: name => {
         const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true })
         let page = pages[`./Pages/${name}.jsx`]

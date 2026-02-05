@@ -1,10 +1,13 @@
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import Toast from '@/Components/Toast'
+
 
 export default function Home({posts}){
     console.log(usePage());
+    const {component} = usePage();
     return (
         <> 
+            <Head title = {component} />
             <Toast />
             <h1 className="text-3xl sm:text-5xl font-bold text-primary text-center my-8">
                 Hello user!
@@ -18,7 +21,7 @@ export default function Home({posts}){
 function Pagination ({posts}){
     return (
         <>
-            <div className="py-12 px-4">
+            <div className="py-12 px-4 flex justify-center items-center">
                 {posts.links.map(link => (
                     link.url ? (
                     <Link

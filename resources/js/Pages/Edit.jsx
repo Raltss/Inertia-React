@@ -1,16 +1,16 @@
 import { Head, useForm } from "@inertiajs/react";
 
-export default function Create(){
-    const {data, setData, post, errors, processing } = useForm({
-        body: "",
+export default function Edit({post}){
+    const {data, setData, put, errors, processing } = useForm({
+        body: post.body,
     }) 
     function submit(e){
         e.preventDefault();
-        post("/posts");
+        put(route('posts.update', post));
     }
     return (
     <>
-        <Head title="Create Post" />
+        <Head title="Edit Post" />
         <div className="min-h-screen bg-base-100 py-12 px-4">
             <div className="max-w-2xl mx-auto">
                 {/* Header */}
