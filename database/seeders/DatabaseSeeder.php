@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Post;
+use App\Models\Expense;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,6 +18,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        Post::factory(2)->create();
+        Expense::factory(10)->create();
     }
 }
