@@ -1,25 +1,31 @@
 import { Head, Link, usePage, useForm } from "@inertiajs/react";
-import Toast from '@/Components/Toast'
-import ShowAddModal from "./Add.jsx";
-import { formatAmountInDisplay } from './Add.jsx';
+import ShowAddModal, { formatAmountInDisplay } from "./Add.jsx";
 import { useState } from 'react';
+import ShowEditModal from "./Edit.jsx";
 
-export default function Home({posts, expenses, expense}){
-    const totalExpense = expenses.reduce((sum, exp) => sum + parseFloat(exp.amount || 0), 0);
-    console.log(usePage());
+export default function Home({expenses, expense}){
     const {component} = usePage();
+    console.log(usePage());
+
+    const totalExpense = expenses.reduce((sum, exp) => sum + parseFloat(exp.amount || 0), 0);
+
     return (
         <> 
             <Head title = {component} />
-            <Toast />
-
-
-            <div className="text-2xl font-bold p-4">
-                Total: ₱{formatAmountInDisplay(totalExpense)}
+            <div className="w-1/2 rounded-lg ml-5 mt-5 border-t">
+                <div className="text-2xl font-bold pl-4 pt-4">
+                    Total: ₱{formatAmountInDisplay(totalExpense)}
+                </div>
+                {expenses.length > 0 ? 
+                    <Expenses expenses = {expenses} expense = {expense} /> 
+                : 
+                <> 
+                    <ShowAddModal />
+                    <Fallback />  
+                </> 
+                }
             </div>
             
-            <ShowAddModal />
-            {expenses.length > 0 ? <Expenses expenses = {expenses} expense = {expense} /> : <Fallback />}
         </>
     );
 }
@@ -29,14 +35,14 @@ function Fallback(){
         <>
         <div className="p-2 border-b"> 
             <p className="list-row p-4 font-medium text-base-content hover:bg-base-200 cursor-pointer">
-                Nothing to show
+                NO EXPENSES TO SHOW
             </p>
         </div>
         </>
     );
 }
 
-function Expenses({expenses, expense}){
+function Expenses({expenses}){
     const [editingExpense, setEditingExpense] = useState(null);
     const {delete: destroy} = useForm();
     
@@ -46,87 +52,52 @@ function Expenses({expenses, expense}){
     }
     return(
         <div>
-            <ShowAddModal editingExpense={editingExpense} onClose={() => setEditingExpense(null)} />
-            {expenses.map(expense =>(
-                <div key={expense.id} className="p-2 border-b"> 
-                    <div className="flex justify-between">
-                        <div className="px-4 pt-3">
-                            <p className="list-row font-medium text-base-content hover:bg-base-200 cursor-pointer text-xl pb-1">
-                                {expense.name} 
-                            </p>
-                            <span className="text-slate-400 text-md"> Amount:    
-                                <span className="text-white text-lg"> ₱{formatAmountInDisplay(expense.amount)}</span>
-                            </span>
-                        </div>
-
-                        <div className="flex justify-center items-center">
-                            <Link href="#" 
-                                 onClick={(e) => {
-                                 e.preventDefault();
-                                 setEditingExpense(expense);
-                                 document.getElementById('my_modal_3').showModal();
-                                 }} 
-                                 className="btn bg-green-500 mr-4 rounded-md"> 
-                                 EDIT 
-                            </Link>
-                            <form onSubmit={(e) => submit(e, expense)}>
-                                <button className="btn bg-red-500 mr-4 rounded-md"> DELETE </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            ))}
+            <ShowAddModal />
+            <ShowEditModal editingExpense={editingExpense} onClose={() => setEditingExpense(null)} />
+            <ExpensesList expenses = {expenses} onSubmit = {submit} setEditingExpense = {setEditingExpense} />
         </div>
     );
 }
 
+function ExpensesList ({expenses, onSubmit, setEditingExpense}){
+    return (
+        <>
+        {[...expenses].reverse().map((expense, index) => (
+            <div key={expense.id} className="px-2 md:px-4"> 
+                <ul className="list bg-base-100 rounded-box shadow-md border-b">
+                    <li className="list-row mb-2 flex flex-col md:flex-row md:items-center gap-3 md:gap-4 p-3 md:p-4">
+                        <span className="text-2xl md:text-4xl font-thin opacity-30 tabular-nums">
+                            #{index + 1}
+                        </span>
+                        
+                        <div className="flex-1">
+                            <p className="font-medium text-base-content text-lg md:text-xl">
+                                {expense.name} 
+                            </p>
+                            <p className="text-slate-400 text-sm md:text-md"> 
+                                Amount:    
+                                <span className="text-white text-base md:text-lg ml-2"> ₱{formatAmountInDisplay(expense.amount)}</span>
+                            </p>
+                        </div>
 
-
-// export function Data ({posts}){
-//     return(
-//         <>
-//             <div>
-//                 {posts.data.map(post =>(
-//                     <div key={post.id} className="p-2 border-b"> 
-//                         <div className="text-sm text-slate-600 px-4 pt-3">
-//                             <span> Posted on: </span>
-//                             <span>{new Date(post.created_at).toLocaleTimeString() }</span>
-//                         </div>
-//                         <p className="list-row p-4 font-medium text-base-content hover:bg-base-200 cursor-pointer">
-//                             {post.body} 
-//                         </p>
-//                         <Link href = {route('posts.show', post)}className="text-blue-500 px-4 text-link"> Read more...</Link>
-//                     </div>
-//                 ))}
-//             </div>
-//         </>
-//     );
-// }
-
-// function Pagination ({posts}){
-//     return (
-//         <>
-//             <div className="py-12 px-4 flex justify-center items-center">
-//                 {posts.links.map(link => (
-//                     link.url ? (
-//                     <Link
-//                         key={link.label}
-//                         href={link.url}
-//                         dangerouslySetInnerHTML={{ __html: link.label }}
-//                         className={`p-1 mx-1 ${
-//                         link.active ? "text-blue-500 font-bold" : ""
-//                         }`}
-//                     />
-//                     ) : (
-//                     <span
-//                         key={link.label}
-//                         dangerouslySetInnerHTML={{ __html: link.label }}
-//                         className="px-1 mx-1 text-base-content/40"
-//                     ></span>
-//                     )
-//                 ))}
-//             </div>
-//         </>
-//     );
-
-// }
+                        <div className="flex gap-2">
+                            <Link href="#" 
+                                onClick={(e) => {
+                                e.preventDefault();
+                                setEditingExpense(expense);
+                                document.getElementById('my_modal_edit').showModal();
+                                }} 
+                                className="btn btn-sm md:btn-md bg-green-500 rounded-md"> 
+                                EDIT 
+                            </Link>
+                            <form onSubmit={(e) => onSubmit(e, expense)}>
+                                <button className="btn btn-sm md:btn-md bg-red-500 rounded-md"> DELETE </button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>       
+            </div>
+        ))}
+        </>
+    );
+}

@@ -1,60 +1,80 @@
-import { Head, useForm } from "@inertiajs/react";
+import { Link, useForm } from '@inertiajs/react';
+import { useRef, useEffect } from 'react';
+import { formatAmountInModal, formatAmountInDisplay } from './Add.jsx';
 
-export default function Edit({post}){
-    const {data, setData, put, errors, processing } = useForm({
-        body: post.body,
-    }) 
+export default function ShowEditModal({ editingExpense = null, onClose }){
+    const modalRef = useRef(null);
+    console.log("editing expense: ", editingExpense)
+    const {data, setData, put} = useForm({
+        name: "",
+        amount: "",
+    });
+
+    useEffect(() => {
+        if (editingExpense) {
+            setData({
+                name: editingExpense.name,
+                amount: editingExpense.amount
+            });
+        }
+    }, [editingExpense?.id]);
+
     function submit(e){
         e.preventDefault();
-        put(route('posts.update', post));
+        
+        if (editingExpense) {
+            put(route('expenses.update', editingExpense.id), {
+                onSuccess: () => {
+                    modalRef.current?.close();
+                    onClose();
+                }
+            });
+        }
     }
-    return (
-    <>
-        <Head title="Edit Post" />
-        <div className="min-h-screen bg-base-100 py-12 px-4">
-            <div className="max-w-2xl mx-auto">
-                {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-4xl font-bold text-base-content mb-2">Create a Post</h1>
-                    <p className="text-base-content/60">Share your thoughts with the community</p>
-                </div>
 
-                {/* Form Card */}
-                <div className="card bg-base-200 shadow-lg flex items-center justify-center">
-                    <form onSubmit={submit} className="card-body gap-6">
-                        {/* Textarea Field */}
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text font-semibold">Your Post</span>
-                            </label>
-                            <textarea 
-                                className={`textarea textarea-bordered resize-none focus:outline-none focus:textarea-primary ${errors.body ? 'textarea-error' : ''}`}
-                                placeholder="What's on your mind?"
-                                value={data.body} 
-                                rows="10"
-                                onChange={(e) => setData('body', e.target.value)}
+    return(
+        <>
+            <dialog ref={modalRef} id="my_modal_edit" className="modal">
+                <div className="modal-box">
+                    <form method="dialog">
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                    <h3 className="font-bold text-2xl">Edit Expense</h3>
+                    <form onSubmit={submit}>
+                        <fieldset className="fieldset mt-4">
+                            <legend className="fieldset-legend text-lg">Description: </legend>
+                            <textarea className="textarea h-32" 
+                                    placeholder="Enter your expense"
+                                    value={data.name} 
+                                    onChange={(e) => setData('name', e.target.value)}
+                                    ></textarea>
+                        </fieldset>
+                        
+                        <legend className="fieldset-legend text-lg">Amount: </legend>
+                        <div className="relative">
+                            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white z-10">
+                                Php
+                            </span>
+                            <input
+                                type="text"
+                                className="input validator pl-12"
+                                required
+                                placeholder="0.00"
+                                max="9999999"
+                                value={formatAmountInModal(data.amount)} 
+                                onChange={(e) => setData('amount', e.target.value.replace(/,/g, ''))}
                             />
-                            {errors.body && (
-                                <label className="label">
-                                    <span className="label-text-alt text-error">{errors.body}</span>
-                                </label>
-                            )}
                         </div>
+                        <p className="validator-hint">Enter the amount</p>
 
-                        {/* Button */}
-                        <div className="card-actions items-center flex justify-center mt-4">
-                            <button 
-                                type="submit"
-                                className={`btn btn-primary w-full sm:w-auto ${processing ? 'loading' : ''}`}
-                                disabled={processing}
-                            > 
-                                {processing ? 'Creating...' : 'Create Post'}
+                        <div className="flex justify-center items-center mt-4">
+                            <button type="submit" className="btn btn-wide p-6 rounded-lg bg-white text-black">
+                                Update
                             </button>
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
-    </>
+            </dialog>
+        </>
     );
 }
