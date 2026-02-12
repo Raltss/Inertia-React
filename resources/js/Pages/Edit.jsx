@@ -1,11 +1,11 @@
-import { Link, useForm } from '@inertiajs/react';
-import { useRef, useEffect } from 'react';
-import { formatAmountInModal, formatAmountInDisplay } from './Add.jsx';
+import { Link, useForm } from "@inertiajs/react";
+import { useRef, useEffect } from "react";
+import { formatAmountInModal, formatAmountInDisplay } from "./Add.jsx";
 
-export default function ShowEditModal({ editingExpense = null, onClose }){
+export default function ShowEditModal({ editingExpense = null, onClose }) {
     const modalRef = useRef(null);
-    console.log("editing expense: ", editingExpense)
-    const {data, setData, put} = useForm({
+    console.log("editing expense: ", editingExpense);
+    const { data, setData, put } = useForm({
         name: "",
         amount: "",
     });
@@ -14,43 +14,52 @@ export default function ShowEditModal({ editingExpense = null, onClose }){
         if (editingExpense) {
             setData({
                 name: editingExpense.name,
-                amount: editingExpense.amount
+                amount: editingExpense.amount,
             });
         }
     }, [editingExpense?.id]);
 
-    function submit(e){
+    function submit(e) {
         e.preventDefault();
-        
+
         if (editingExpense) {
-            put(route('expenses.update', editingExpense.id), {
+            put(route("expenses.update", editingExpense.id), {
                 onSuccess: () => {
                     modalRef.current?.close();
                     onClose();
-                }
+                },
             });
         }
     }
 
-    return(
+    return (
         <>
             <dialog ref={modalRef} id="my_modal_edit" className="modal">
                 <div className="modal-box">
                     <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                            ✕
+                        </button>
                     </form>
                     <h3 className="font-bold text-2xl">Edit Expense</h3>
                     <form onSubmit={submit}>
                         <fieldset className="fieldset mt-4">
-                            <legend className="fieldset-legend text-lg">Description: </legend>
-                            <textarea className="textarea h-32" 
-                                    placeholder="Enter your expense"
-                                    value={data.name} 
-                                    onChange={(e) => setData('name', e.target.value)}
-                                    ></textarea>
+                            <legend className="fieldset-legend text-lg mb-1">
+                                Description:{" "}
+                            </legend>
+                            <textarea
+                                className="textarea h-32"
+                                placeholder="Enter your expense"
+                                value={data.name}
+                                onChange={(e) =>
+                                    setData("name", e.target.value)
+                                }
+                            ></textarea>
                         </fieldset>
-                        
-                        <legend className="fieldset-legend text-lg">Amount: </legend>
+
+                        <legend className="fieldset-legend text-lg mb-1">
+                            Amount:{" "}
+                        </legend>
                         <div className="relative">
                             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white z-10">
                                 Php
@@ -61,14 +70,42 @@ export default function ShowEditModal({ editingExpense = null, onClose }){
                                 required
                                 placeholder="0.00"
                                 max="9999999"
-                                value={formatAmountInModal(data.amount)} 
-                                onChange={(e) => setData('amount', e.target.value.replace(/,/g, ''))}
+                                value={formatAmountInModal(data.amount)}
+                                onChange={(e) =>
+                                    setData(
+                                        "amount",
+                                        e.target.value.replace(/,/g, ""),
+                                    )
+                                }
                             />
                         </div>
+                        <legend className="fieldset-legend text-lg mt-4 mb-1">
+                            Category:{" "}
+                        </legend>
+                        <select
+                            defaultValue="Select a category"
+                            className="select"
+                        >
+                            <option disabled={true}>Select a category</option>
+                            <option>Food & Drinks</option>
+                            <option>Shopping</option>
+                            <option>Housing</option>
+                            <option>Transportation</option>
+                            <option>Housing</option>
+                            <option>Vehicle</option>
+                            <option>Life & Entertainment</option>
+                            <option>Communication</option>
+                            <option>Financial Expenses</option>
+                            <option>Investments</option>
+                            <option>Others</option>
+                        </select>
                         <p className="validator-hint">Enter the amount</p>
 
                         <div className="flex justify-center items-center mt-4">
-                            <button type="submit" className="btn btn-wide p-6 rounded-lg bg-white text-black">
+                            <button
+                                type="submit"
+                                className="btn btn-wide p-6 rounded-lg bg-white text-black"
+                            >
                                 Update
                             </button>
                         </div>
