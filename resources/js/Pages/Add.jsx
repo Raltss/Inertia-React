@@ -1,8 +1,9 @@
 import { Link, useForm } from "@inertiajs/react";
 import { useRef } from "react";
 
-export default function ShowAddModal() {
+export default function ShowAddModal({ expenses }) {
     const modalRef = useRef(null);
+    console.log("here's the expense: ", { expenses });
 
     const { data, setData, post } = useForm({
         name: "",
@@ -56,7 +57,6 @@ export default function ShowAddModal() {
                                 }
                             ></textarea>
                         </fieldset>
-
                         <legend className="fieldset-legend text-lg mb-1">
                             Amount:{" "}
                         </legend>
@@ -80,28 +80,8 @@ export default function ShowAddModal() {
                             />
                         </div>
 
-                        <legend className="fieldset-legend text-lg mt-4 mb-1">
-                            Category:{" "}
-                        </legend>
-                        <select
-                            defaultValue="Select a category"
-                            className="select"
-                        >
-                            <option disabled={true}>Select a category</option>
-                            <option>Food & Drinks</option>
-                            <option>Shopping</option>
-                            <option>Housing</option>
-                            <option>Transportation</option>
-                            <option>Housing</option>
-                            <option>Vehicle</option>
-                            <option>Life & Entertainment</option>
-                            <option>Communication</option>
-                            <option>Financial Expenses</option>
-                            <option>Investments</option>
-                            <option>Others</option>
-                        </select>
+                        <Category expenses={expenses} />
                         <p className="validator-hint">Enter the amount</p>
-
                         <div className="flex justify-center items-center mt-4">
                             <button
                                 type="submit"
@@ -133,4 +113,20 @@ export function formatAmountInDisplay(value) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     });
+}
+
+function Category({ expenses }) {
+    return (
+        <>
+            <legend className="fieldset-legend text-lg mt-4 mb-1">
+                Category:{" "}
+            </legend>
+            <select defaultValue="Select a category" className="select">
+                <option disabled={true}>Select a category</option>
+                {expenses.map((expense) => (
+                    <option key={expense.id}>{expense.category}</option>
+                ))}
+            </select>
+        </>
+    );
 }

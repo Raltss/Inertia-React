@@ -1,5 +1,6 @@
 import React from "react";
 import { useRef } from "react";
+
 function Description() {
     const modalRef = useRef(null);
     return (
@@ -11,7 +12,19 @@ function Description() {
                             ✕
                         </button>
                     </form>
-                    <h3 className="font-bold text-2xl">Add an expense</h3>
+                    <div className="flex flex-col">
+                        {" "}
+                        <h1 className="font-bold text-2xl mb-4">Details</h1>
+                        <h2 className="font-bold text-lg mb-4 ">
+                            {" "}
+                            Expense Name:{" "}
+                        </h2>
+                        <h2 className="font-bold text-lg mb-4">
+                            {" "}
+                            Expense Amount:{" "}
+                        </h2>
+                        <h2 className="font-bold text-lg"> Category: </h2>
+                    </div>
                 </div>
             </dialog>
         </div>

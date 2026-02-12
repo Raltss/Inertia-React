@@ -55,9 +55,10 @@ function Expenses({ expenses }) {
     }
     return (
         <div>
-            <ShowAddModal />
+            <ShowAddModal expenses={expenses} />
             <Description />
             <ShowEditModal
+                expenses={expenses}
                 editingExpense={editingExpense}
                 onClose={() => setEditingExpense(null)}
             />
@@ -76,16 +77,15 @@ function ExpensesList({ expenses, onSubmit, setEditingExpense }) {
             {[...expenses].reverse().map((expense, index) => (
                 <div key={expense.id} className="px-2 md:px-4">
                     <ul className="list bg-base-100 rounded-box shadow-md border-b">
-                        <button
-                            className="cursor-pointer hover:bg-slate-500/20"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                document
-                                    .getElementById("my_modal_description")
-                                    .showModal();
-                            }}
-                        >
-                            <li className="list-row mb-2 flex flex-col md:flex-row md:items-center gap-3 md:gap-4 p-3 md:p-4">
+                        <div className="cursor-pointer hover:bg-slate-500/20 rounded-lg">
+                            <li
+                                className="list-row mb-2 flex flex-col md:flex-row md:items-center gap-3 md:gap-4 p-3 md:p-4"
+                                onClick={() =>
+                                    document
+                                        .getElementById("my_modal_description")
+                                        .showModal()
+                                }
+                            >
                                 <span className="text-2xl md:text-4xl font-thin opacity-30 tabular-nums">
                                     #{index + 1}
                                 </span>
@@ -106,7 +106,10 @@ function ExpensesList({ expenses, onSubmit, setEditingExpense }) {
                                     </p>
                                 </div>
 
-                                <div className="flex gap-2">
+                                <div
+                                    className="flex gap-2"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
                                     <Link
                                         href="#"
                                         onClick={(e) => {
@@ -130,7 +133,7 @@ function ExpensesList({ expenses, onSubmit, setEditingExpense }) {
                                     </form>
                                 </div>
                             </li>
-                        </button>
+                        </div>
                     </ul>
                 </div>
             ))}
