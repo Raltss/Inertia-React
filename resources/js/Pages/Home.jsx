@@ -4,7 +4,7 @@ import { useState } from "react";
 import ShowEditModal from "./Edit.jsx";
 import Description from "./Description.jsx";
 
-export default function Home({ expenses, expense }) {
+export default function Home({ expenses, expense, categories }) {
     const { component } = usePage();
     console.log(usePage());
 
@@ -21,10 +21,14 @@ export default function Home({ expenses, expense }) {
                     Total: ₱{formatAmountInDisplay(totalExpense)}
                 </div>
                 {expenses.length > 0 ? (
-                    <Expenses expenses={expenses} expense={expense} />
+                    <Expenses
+                        expenses={expenses}
+                        expense={expense}
+                        categories={categories}
+                    />
                 ) : (
                     <>
-                        <ShowAddModal />
+                        <ShowAddModal categories={categories} />
                         <Fallback />
                     </>
                 )}
@@ -45,7 +49,7 @@ function Fallback() {
     );
 }
 
-function Expenses({ expenses }) {
+function Expenses({ expenses, categories }) {
     const [editingExpense, setEditingExpense] = useState(null);
     const { delete: destroy } = useForm();
 
@@ -55,12 +59,13 @@ function Expenses({ expenses }) {
     }
     return (
         <div>
-            <ShowAddModal expenses={expenses} />
+            <ShowAddModal expenses={expenses} categories={categories} />
             <Description />
             <ShowEditModal
                 expenses={expenses}
                 editingExpense={editingExpense}
                 onClose={() => setEditingExpense(null)}
+                categories={categories}
             />
             <ExpensesList
                 expenses={expenses}

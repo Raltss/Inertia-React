@@ -1,13 +1,13 @@
 import { Link, useForm } from "@inertiajs/react";
 import { useRef } from "react";
 
-export default function ShowAddModal({ expenses }) {
+export default function ShowAddModal({ categories }) {
     const modalRef = useRef(null);
-    console.log("here's the expense: ", { expenses });
 
     const { data, setData, post } = useForm({
         name: "",
         amount: "",
+        category_id: "",
     });
 
     function submit(e) {
@@ -27,7 +27,7 @@ export default function ShowAddModal({ expenses }) {
                     href="#"
                     onClick={(e) => {
                         e.preventDefault();
-                        document.getElementById("my_modal_3").showModal();
+                        modalRef.current.showModal();
                     }}
                     className="btn btn-soft p-5"
                 >
@@ -80,7 +80,11 @@ export default function ShowAddModal({ expenses }) {
                             />
                         </div>
 
-                        <Category expenses={expenses} />
+                        <Category
+                            categories={categories}
+                            selectedCategory={data.category_id}
+                            onChange={(value) => setData("category_id", value)}
+                        />
                         <p className="validator-hint">Enter the amount</p>
                         <div className="flex justify-center items-center mt-4">
                             <button
@@ -115,16 +119,25 @@ export function formatAmountInDisplay(value) {
     });
 }
 
-function Category({ expenses }) {
+export function Category({ categories, selectedCategory, onChange }) {
+    console.log({ categories });
     return (
         <>
             <legend className="fieldset-legend text-lg mt-4 mb-1">
                 Category:{" "}
             </legend>
-            <select defaultValue="Select a category" className="select">
-                <option disabled={true}>Select a category</option>
-                {expenses.map((expense) => (
-                    <option key={expense.id}>{expense.category}</option>
+            <select
+                value={selectedCategory || ""}
+                onChange={(e) => onChange(e.target.value)}
+                className="select"
+            >
+                <option value="" disabled>
+                    Select a category
+                </option>
+                {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                        {category.name}
+                    </option>
                 ))}
             </select>
         </>

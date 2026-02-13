@@ -19,7 +19,6 @@ class ExpenseFactory extends Factory
         return [
             'name' => fake()->text(10),
             'amount' => fake()->numberBetween(10, 30),
-            'category' => fake()->text(10),
         ];
     }
 }

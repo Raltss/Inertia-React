@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Expense;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Category;
 
 class ExpenseController extends Controller
 {
@@ -13,7 +14,8 @@ class ExpenseController extends Controller
     public function index()
     {   
         $expenses = Expense::latest()->get();
-        return Inertia::render('Home', ['expenses' => $expenses]);
+        $categories = Category::all();
+        return Inertia::render('Home', ['expenses' => $expenses, 'categories' => $categories,]);
     }
 
     /**

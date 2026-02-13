@@ -8,6 +8,7 @@ export default function ShowEditModal({ editingExpense = null, onClose }) {
     const { data, setData, put } = useForm({
         name: "",
         amount: "",
+        category_id: "",
     });
 
     useEffect(() => {
@@ -15,6 +16,7 @@ export default function ShowEditModal({ editingExpense = null, onClose }) {
             setData({
                 name: editingExpense.name,
                 amount: editingExpense.amount,
+                category_id: editingExpense.category_id,
             });
         }
     }, [editingExpense?.id]);
@@ -79,26 +81,11 @@ export default function ShowEditModal({ editingExpense = null, onClose }) {
                                 }
                             />
                         </div>
-                        <legend className="fieldset-legend text-lg mt-4 mb-1">
-                            Category:{" "}
-                        </legend>
-                        <select
-                            defaultValue="Select a category"
-                            className="select"
-                        >
-                            <option disabled={true}>Select a category</option>
-                            <option>Food & Drinks</option>
-                            <option>Shopping</option>
-                            <option>Housing</option>
-                            <option>Transportation</option>
-                            <option>Housing</option>
-                            <option>Vehicle</option>
-                            <option>Life & Entertainment</option>
-                            <option>Communication</option>
-                            <option>Financial Expenses</option>
-                            <option>Investments</option>
-                            <option>Others</option>
-                        </select>
+                        <Category
+                            categories={categories}
+                            selectedCategory={data.category_id}
+                            onChange={(value) => setData("category_id", value)}
+                        />
                         <p className="validator-hint">Enter the amount</p>
 
                         <div className="flex justify-center items-center mt-4">
